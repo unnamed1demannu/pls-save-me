@@ -55,8 +55,8 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      */
     playBoard->doMove(opponentsMove, opponentSide);
 
-    vector<Move> moves; // vector of possible moves at a given board
-    Move bestMove; //move to actually do 
+    vector<Move *> moves; // vector of possible moves at a given board
+    Move *bestMove; //move to actually do 
     int maxScore = 0;
 
     if (!playBoard->hasMoves(playerSide))
@@ -68,10 +68,10 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     {
         for (int j = 0; j < 8; j++)
         {
-            //Move tempMove = Move(i, j);
-            if (playBoard->checkMove(Move(i, j ), playerSide))
+            Move * tempMove = new Move(i, j);
+            if (playBoard->checkMove(tempMove, playerSide))
             {
-                moves.push_back(Move(i, j));
+                moves.push_back(tempMove);
             }
         }
     }
@@ -79,11 +79,11 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     // finding the heuretic score
     for (int i = 0; i < moves.size(); i++)
     {
-        Board *tempBoard = playBoard.copy(); // new board for each possible move
-        tempBoard->doMove(moves[i]); // do the move
+        Board *tempBoard = playBoard->copy(); // new board for each possible move
+        tempBoard->doMove(moves[i], playerSide); // do the move
         int score = 0;
 
-        score += tempBoard->count(playerSide);
+        score += tempBoard->count(playerSide) - tempBoard->count(opponentSide);
 
         /**
         * if moves[i] == corner spot
