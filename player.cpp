@@ -53,9 +53,16 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      */
     playBoard->doMove(opponentsMove, opponentSide);
 
+    vector<Move> moves;
+
     for (int i = 0; i < 8; i++)
     {
-        
+        for (int j = 0; j < 8; j++)
+        {
+            Board *tempBoard = playBoard.copy();
+            //Move tempMove = Move(i, j);
+            tempBoard->checkMove(Move(i, j ), )
+        }
     }
 
     return nullptr;
