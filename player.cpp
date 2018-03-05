@@ -16,6 +16,8 @@ Player::Player(Side side) {
      */
 
     playBoard = new Board(); // board that player keeps track of
+    playerSide = side; // set side 
+
     if (side == BLACK)
     {
         opponentSide = WHITE;
@@ -53,17 +55,53 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      */
     playBoard->doMove(opponentsMove, opponentSide);
 
-    vector<Move> moves;
+    vector<Move> moves; // vector of possible moves at a given board
+    Move bestMove; //move to actually do 
+    int maxScore = 0;
 
-    for (int i = 0; i < 8; i++)
+    if (!playBoard->hasMoves(playerSide))
+    {
+        return nullptr;
+    }
+
+    for (int i = 0; i < 8; i++) // populate moves vector
     {
         for (int j = 0; j < 8; j++)
         {
-            Board *tempBoard = playBoard.copy();
             //Move tempMove = Move(i, j);
-            tempBoard->checkMove(Move(i, j ), )
+            if (playBoard->checkMove(Move(i, j ), playerSide))
+            {
+                moves.push_back(Move(i, j));
+            }
         }
     }
 
-    return nullptr;
+    // finding the heuretic score
+    for (int i = 0; i < moves.size(); i++)
+    {
+        Board *tempBoard = playBoard.copy(); // new board for each possible move
+        tempBoard->doMove(moves[i]); // do the move
+        int score = 0;
+
+        score += tempBoard->count(playerSide);
+
+        /**
+        * if moves[i] == corner spot
+        *  score += 10
+        * if moves[i] == side spot
+        *  score += 1
+        * if moves[i] == one spot from corner
+        *  score -= 10
+        * if moves[i] == on a side, next to opposite color
+        *  score -= 5
+        */
+
+        if (score > maxScore)
+        {
+            maxScore = score;
+            bestMove = moves[i];
+        }
+    }
+
+    return bestMove;
 }
