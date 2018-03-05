@@ -76,6 +76,8 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         }
     }
 
+    //std::cerr << bestMove->getX() << ", " << bestMove->getY() << std::endl;
+
     // finding the heuretic score
     for (int i = 0; i < moves.size(); i++)
     {
@@ -84,6 +86,8 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         int score = 0;
 
         score += tempBoard->count(playerSide) - tempBoard->count(opponentSide);
+
+        //std::cerr << moves[i]->getX() << ", " << moves[i]->getY() << ", " << score << std::endl;
 
         /**
         * if moves[i] == corner spot
@@ -100,8 +104,11 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         {
             maxScore = score;
             bestMove = moves[i];
+            //std::cerr << "b: "<< bestMove->getX() << ", " << bestMove->getY() << std::endl;
         }
     }
+
+    playBoard->doMove(bestMove, playerSide);
 
     return bestMove;
 }
