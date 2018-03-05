@@ -53,83 +53,204 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      * TODO: Implement how moves your AI should play here. You should first
      * process the opponent's opponents move before calculating your own move
      */
-    playBoard->doMove(opponentsMove, opponentSide);
 
-    vector<Move *> moves; // vector of possible moves at a given board
-    Move *bestMove; //move to actually do 
-    int maxScore = 0;
-
-    if (!playBoard->hasMoves(playerSide))
+    if (!testingMinimax)
     {
-        return nullptr;
-    }
+        playBoard->doMove(opponentsMove, opponentSide);
 
-    for (int i = 0; i < 8; i++) // populate moves vector
-    {
-        for (int j = 0; j < 8; j++)
+        vector<Move *> moves; // vector of possible moves at a given board
+        Move *bestMove; //move to actually do 
+        int maxScore = 0;
+
+        if (!playBoard->hasMoves(playerSide))
         {
-            Move * tempMove = new Move(i, j);
-            if (playBoard->checkMove(tempMove, playerSide))
+            return nullptr;
+        }
+
+        for (int i = 0; i < 8; i++) // populate moves vector
+        {
+            for (int j = 0; j < 8; j++)
             {
-                moves.push_back(tempMove);
+                Move * tempMove = new Move(i, j);
+                if (playBoard->checkMove(tempMove, playerSide))
+                {
+                    moves.push_back(tempMove);
+                }
             }
         }
+
+        //std::cerr << bestMove->getX() << ", " << bestMove->getY() << std::endl;
+
+        // finding the heuretic score
+        for (int i = 0; i < moves.size(); i++)
+        {
+            Board *tempBoard = playBoard->copy(); // new board for each possible move
+            tempBoard->doMove(moves[i], playerSide); // do the move
+            int score = 0;
+
+            score += tempBoard->count(playerSide) - tempBoard->count(opponentSide);
+
+            // for ease of writing
+            int x = moves[i]->getX();
+            int y = moves[i]->getY();
+
+            // corner position weighed extremely heavily
+            if ((x == 0 || x == 7) && (y == 0 || y == 7)) 
+            {
+                score += 50;
+            }
+
+            // side position weighed somewhat
+            if (x == 0 || x == 7 || y == 0 || y == 7)
+            {
+                score += 10;
+            }
+
+            // one spot from corner is very bad
+            
+            if ((x == 0 && (y == 1 || y == 6)) || (x == 7 && (y == 1 || y == 6)) ||
+                (y == 0 && (x == 1 || x == 6)) || (y == 7 && (x == 1 || x == 6)) ||
+                (x == 1 && y == 1) || (x == 1 && y == 6) || (x == 6 && y == 1) || (x == 6 && y == 6))
+            {
+                score -= 10;
+            }
+
+            //one spot from edge is bad
+            if (x == 1 || x == 6 || y == 1 || y == 6)
+            {
+                score -= 5;
+            }
+
+            // being on the side next to an opposite color is bad
+
+            // since it's possible that every single move results in a negative result
+            if (i == 0 || score > maxScore)
+            {
+                maxScore = score;
+                bestMove = moves[i];
+            }
+        }
+        //std::cerr << bestMove->getX() << ", " << bestMove->getY() << std::endl;
+
+        playBoard->doMove(bestMove, playerSide);
+
+        return bestMove;
     }
 
-    //std::cerr << bestMove->getX() << ", " << bestMove->getY() << std::endl;
-
-    // finding the heuretic score
-    for (int i = 0; i < moves.size(); i++)
+    else
     {
-        Board *tempBoard = playBoard->copy(); // new board for each possible move
-        tempBoard->doMove(moves[i], playerSide); // do the move
-        int score = 0;
+        playBoard->doMove(opponentsMove, opponentSide);
 
-        score += tempBoard->count(playerSide) - tempBoard->count(opponentSide);
+        vector<Move *> moves; // vector of possible moves at a given board
+        Move *bestMove; //move to actually do 
+        int maxScoreOverall = 0;
 
-        // for ease of writing
-        int x = moves[i]->getX();
-        int y = moves[i]->getY();
-
-        // corner position weighed extremely heavily
-        if ((x == 0 || x == 7) && (y == 0 || y == 7)) 
+        if (!playBoard->hasMoves(playerSide))
         {
-            score += 50;
+            return nullptr;
         }
 
-        // side position weighed somewhat
-        if (x == 0 || x == 7 || y == 0 || y == 7)
+        for (int i = 0; i < 8; i++) // populate moves vector
         {
-            score += 10;
+            for (int j = 0; j < 8; j++)
+            {
+                Move * tempMove = new Move(i, j);
+                if (playBoard->checkMove(tempMove, playerSide))
+                {
+                    moves.push_back(tempMove);
+                }
+            }
         }
 
-        // one spot from corner is very bad
-        
-        if ((x == 0 && (y == 1 || y == 6)) || (x == 7 && (y == 1 || y == 6)) ||
-            (y == 0 && (x == 1 || x == 6)) || (y == 7 && (x == 1 || x == 6)) ||
-            (x == 1 && y == 1) || (x == 1 && y == 6) || (x == 6 && y == 1) || (x == 6 && y == 6))
-        {
-            score -= 10;
-        }
+        //std::cerr << bestMove->getX() << ", " << bestMove->getY() << std::endl;
 
-        //one spot from edge is bad
-        if (x == 1 || x == 6 || y == 1 || y == 6)
+        // finding the heuretic score
+        for (int i = 0; i < moves.size(); i++)
         {
-            score -= 5;
-        }
+            Board *tempBoard = playBoard->copy(); // new board for each possible move
+            tempBoard->doMove(moves[i], playerSide); // do the move
+            int minScore = 0;
 
-        // being on the side next to an opposite color is bad
+            vector<Move*> moves2; // vector of possible moves at a given board
 
-        // since it's possible that every single move results in a negative result
-        if (i == 0 || score > maxScore)
-        {
-            maxScore = score;
-            bestMove = moves[i];
+            // find new possible moves for new depth
+            for (int j = 0; j < 8; j++) // populate moves vector
+            {
+                for (int k = 0; k < 8; k++)
+                {
+                    Move * tempMove = new Move(j, k);
+                    if (tempBoard->checkMove(tempMove, opponentSide))
+                    {
+                        moves2.push_back(tempMove);
+                    }
+                }
+            }
+
+            for (int j = 0; j < moves2.size(); j++)
+            {
+                int score = 0;
+
+                Board *tempBoard2 = tempBoard->copy();
+                tempBoard2->doMove(moves2[j], opponentSide);
+
+                score = tempBoard2->count(playerSide) - tempBoard2->count(opponentSide);
+
+                /*
+                // for ease of writing
+                int x = moves2[j]->getX();
+                int y = moves2[j]->getY();
+
+                // corner position weighed extremely heavily
+                if ((x == 0 || x == 7) && (y == 0 || y == 7)) 
+                {
+                    score += 50;
+                }
+
+                // side position weighed somewhat
+                if (x == 0 || x == 7 || y == 0 || y == 7)
+                {
+                    score += 10;
+                }
+
+                // one spot from corner is very bad
+                
+                if ((x == 0 && (y == 1 || y == 6)) || (x == 7 && (y == 1 || y == 6)) ||
+                    (y == 0 && (x == 1 || x == 6)) || (y == 7 && (x == 1 || x == 6)) ||
+                    (x == 1 && y == 1) || (x == 1 && y == 6) || (x == 6 && y == 1) || (x == 6 && y == 6))
+                {
+                    score -= 10;
+                }
+
+                //one spot from edge is bad
+                if (x == 1 || x == 6 || y == 1 || y == 6)
+                {
+                    score -= 5;
+                }
+
+                // being on the side next to an opposite color is bad
+                */
+
+                // since it's possible that every single move results in a negative result
+                if (j == 0 || score < minScore)
+                {
+                    minScore = score;
+                }
+            }
+
+            if (i == 0 || minScore > maxScoreOverall)
+            {
+                maxScoreOverall = minScore;
+                bestMove = moves[i];
+            }
+
+            
         }
+        //std::cerr << bestMove->getX() << ", " << bestMove->getY() << std::endl;
+
+        playBoard->doMove(bestMove, playerSide);
+
+        return bestMove;
     }
-    //std::cerr << bestMove->getX() << ", " << bestMove->getY() << std::endl;
 
-    playBoard->doMove(bestMove, playerSide);
 
-    return bestMove;
 }
