@@ -87,26 +87,47 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 
         score += tempBoard->count(playerSide) - tempBoard->count(opponentSide);
 
-        //std::cerr << moves[i]->getX() << ", " << moves[i]->getY() << ", " << score << std::endl;
+        // for ease of writing
+        int x = moves[i]->getX();
+        int y = moves[i]->getY();
 
-        /**
-        * if moves[i] == corner spot
-        *  score += 10
-        * if moves[i] == side spot
-        *  score += 1
-        * if moves[i] == one spot from corner
-        *  score -= 10
-        * if moves[i] == on a side, next to opposite color
-        *  score -= 5
-        */
+        // corner position weighed extremely heavily
+        if ((x == 0 || x == 7) && (y == 0 || y == 7)) 
+        {
+            score += 50;
+        }
 
-        if (score > maxScore)
+        // side position weighed somewhat
+        if (x == 0 || x == 7 || y == 0 || y == 7)
+        {
+            score += 10;
+        }
+
+        // one spot from corner is very bad
+        
+        if ((x == 0 && (y == 1 || y == 6)) || (x == 7 && (y == 1 || y == 6)) ||
+            (y == 0 && (x == 1 || x == 6)) || (y == 7 && (x == 1 || x == 6)) ||
+            (x == 1 && y == 1) || (x == 1 && y == 6) || (x == 6 && y == 1) || (x == 6 && y == 6))
+        {
+            score -= 10;
+        }
+
+        //one spot from edge is bad
+        if (x == 1 || x == 6 || y == 1 || y == 6)
+        {
+            score -= 5;
+        }
+
+        // being on the side next to an opposite color is bad
+
+        // since it's possible that every single move results in a negative result
+        if (i == 0 || score > maxScore)
         {
             maxScore = score;
             bestMove = moves[i];
-            //std::cerr << "b: "<< bestMove->getX() << ", " << bestMove->getY() << std::endl;
         }
     }
+    //std::cerr << bestMove->getX() << ", " << bestMove->getY() << std::endl;
 
     playBoard->doMove(bestMove, playerSide);
 
