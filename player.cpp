@@ -16,7 +16,7 @@ Player::Player(Side side) {
      */
 
     playBoard = new Board(); // board that player keeps track of
-    playerSide = side; // set side 
+    playerSide = side; // set side
 
     if (side == BLACK)
     {
@@ -59,7 +59,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         playBoard->doMove(opponentsMove, opponentSide);
 
         vector<Move *> moves; // vector of possible moves at a given board
-        Move *bestMove; //move to actually do 
+        Move *bestMove; //move to actually do
         int maxScore = 0;
 
         if (!playBoard->hasMoves(playerSide))
@@ -95,7 +95,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
             int y = moves[i]->getY();
 
             // corner position weighed extremely heavily
-            if ((x == 0 || x == 7) && (y == 0 || y == 7)) 
+            if ((x == 0 || x == 7) && (y == 0 || y == 7))
             {
                 score += 50;
             }
@@ -107,7 +107,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
             }
 
             // one spot from corner is very bad
-            
+
             if ((x == 0 && (y == 1 || y == 6)) || (x == 7 && (y == 1 || y == 6)) ||
                 (y == 0 && (x == 1 || x == 6)) || (y == 7 && (x == 1 || x == 6)) ||
                 (x == 1 && y == 1) || (x == 1 && y == 6) || (x == 6 && y == 1) || (x == 6 && y == 6))
@@ -142,7 +142,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         playBoard->doMove(opponentsMove, opponentSide);
 
         vector<Move *> moves; // vector of possible moves at a given board
-        Move *bestMove; //move to actually do 
+        Move *bestMove; //move to actually do
         int maxScoreOverall = 0;
 
         if (!playBoard->hasMoves(playerSide))
@@ -201,7 +201,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
                 int y = moves2[j]->getY();
 
                 // corner position weighed extremely heavily
-                if ((x == 0 || x == 7) && (y == 0 || y == 7)) 
+                if ((x == 0 || x == 7) && (y == 0 || y == 7))
                 {
                     score += 50;
                 }
@@ -213,7 +213,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
                 }
 
                 // one spot from corner is very bad
-                
+
                 if ((x == 0 && (y == 1 || y == 6)) || (x == 7 && (y == 1 || y == 6)) ||
                     (y == 0 && (x == 1 || x == 6)) || (y == 7 && (x == 1 || x == 6)) ||
                     (x == 1 && y == 1) || (x == 1 && y == 6) || (x == 6 && y == 1) || (x == 6 && y == 6))
@@ -243,7 +243,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
                 bestMove = moves[i];
             }
 
-            
+
         }
         //std::cerr << bestMove->getX() << ", " << bestMove->getY() << std::endl;
 

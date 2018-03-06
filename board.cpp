@@ -178,3 +178,20 @@ void Board::setBoard(char data[]) {
         }
     }
 }
+/* TODO implemented later
+* populates a vector of all possible moves for a certain side
+vector<Move *> Board::getMoves(Side side){
+    vector<Move *> moves;
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            Move * tempMove = new Move(i, j);
+            if(checkMove(tempMove, side))
+            {
+                moves.push_back(tempMove);
+            }
+        }
+    }
+}
+*/

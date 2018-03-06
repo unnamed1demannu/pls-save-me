@@ -30,6 +30,6 @@ public:
     int countWhite();
 
     void setBoard(char data[]);
+    //vector<Move *> getMoves(Side side);
 };
-
 #endif
