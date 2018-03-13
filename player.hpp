@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <vector>
+#include <climits>
+#include <algorithm>
 #include "common.hpp"
 #include "board.hpp"
 using namespace std;

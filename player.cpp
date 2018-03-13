@@ -54,8 +54,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      * process the opponent's opponents move before calculating your own move
      */
 
-    if (false)
-    {
+    /*
         playBoard->doMove(opponentsMove, opponentSide);
 
         vector<Move *> moves; // vector of possible moves at a given board
@@ -136,129 +135,71 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 
         return bestMove;
     }
+    */
 
-    else
-    {
-        playBoard->doMove(opponentsMove, opponentSide);
+    playBoard->doMove(opponentsMove, opponentSide);
 
-        vector<Move *> moves; // vector of possible moves at a given board
-        Move *bestMove; //move to actually do
-        int maxScoreOverall = 0;
-
-        if (!playBoard->hasMoves(playerSide))
-        {
-            return nullptr;
-        }
-
-        for (int i = 0; i < 8; i++) // populate moves vector
-        {
-            for (int j = 0; j < 8; j++)
-            {
-                Move * tempMove = new Move(i, j);
-                if (playBoard->checkMove(tempMove, playerSide))
-                {
-                    moves.push_back(tempMove);
-                }
-            }
-        }
-
-        //std::cerr << bestMove->getX() << ", " << bestMove->getY() << std::endl;
-
-        // finding the heuretic score
-        for (int i = 0; i < moves.size(); i++)
-        {
-            Board *tempBoard = playBoard->copy(); // new board for each possible move
-            tempBoard->doMove(moves[i], playerSide); // do the move
-            int minScore = 0;
-
-            vector<Move*> moves2; // vector of possible moves at a given board
-
-            // find new possible moves for new depth
-            for (int j = 0; j < 8; j++) // populate moves vector
-            {
-                for (int k = 0; k < 8; k++)
-                {
-                    Move * tempMove = new Move(j, k);
-                    if (tempBoard->checkMove(tempMove, opponentSide))
-                    {
-                        moves2.push_back(tempMove);
-                    }
-                }
-            }
-
-            for (int j = 0; j < moves2.size(); j++)
-            {
-                int score = 0;
-
-                Board *tempBoard2 = tempBoard->copy();
-                tempBoard2->doMove(moves2[j], opponentSide);
-
-                score = tempBoard2->count(playerSide) - tempBoard2->count(opponentSide);
-
-                /*
-                // for ease of writing
-                int x = moves2[j]->getX();
-                int y = moves2[j]->getY();
-
-                // corner position weighed extremely heavily
-                if ((x == 0 || x == 7) && (y == 0 || y == 7))
-                {
-                    score += 50;
-                }
-
-                // side position weighed somewhat
-                if (x == 0 || x == 7 || y == 0 || y == 7)
-                {
-                    score += 10;
-                }
-
-                // one spot from corner is very bad
-
-                if ((x == 0 && (y == 1 || y == 6)) || (x == 7 && (y == 1 || y == 6)) ||
-                    (y == 0 && (x == 1 || x == 6)) || (y == 7 && (x == 1 || x == 6)) ||
-                    (x == 1 && y == 1) || (x == 1 && y == 6) || (x == 6 && y == 1) || (x == 6 && y == 6))
-                {
-                    score -= 10;
-                }
-
-                //one spot from edge is bad
-                if (x == 1 || x == 6 || y == 1 || y == 6)
-                {
-                    score -= 5;
-                }
-
-                // being on the side next to an opposite color is bad
-                */
-
-                // since it's possible that every single move results in a negative result
-                if (j == 0 || score < minScore)
-                {
-                    minScore = score;
-                }
-            }
-
-            if (i == 0 || minScore > maxScoreOverall)
-            {
-                maxScoreOverall = minScore;
-                bestMove = moves[i];
-            }
-
-
-        }
-        //std::cerr << bestMove->getX() << ", " << bestMove->getY() << std::endl;
-
-        playBoard->doMove(bestMove, playerSide);
-
-        return bestMove;
-    }
-
-
+    alphabeta(playBoard, 3, INT_MIN, INT_MAX, playerSide);
+    
+    playBoard->doMove(abMove, playerSide);
 }
 
-int Player::alphabeta(Board curBoard, int depth, int alpha, int beta, Side side)
+int Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side)
 {
-    if (depth == 0 || !board.hasMoves(curPlayer))
+    int v = 0;
+    Side otherSide;
+    Board *tempBoard = curBoard->copy();
+
+    if (depth == 0 || !curBboard->hasMoves(side))
     {
-        return curBoard.getScore();
+        return curBoard->getScore();
+    }
+
+    if (side == WHITE)
+    {
+        otherSide = BLACK:
+    }
+    else
+    {
+        otherSide = WHITE;
+    }
+
+    vector<Move *> moves = tempBoard->getMoves(side);
+
+    if (side == playerSide)
+    {
+        v = INT_MIN;
+
+        for (int i = 0; i < moves.size(); i++)
+        {
+            v = max(v, alphabeta(tempBoard->doMove(moves[i], side), depth - 1, alpha, beta, otherSide));
+            alpha = max(v, alpha);
+
+            if (beta <= alpha)
+            {
+                abMove = moves[i];
+                break;
+            }
+        }
+
+        return v;
+    }
+    else
+    {
+        v = INT_MAX;
+        
+        for (int i = 0; i < moves.size(); i++)
+        {
+            v = min(v, alphabeta(tempBoard->doMove(moves[i], side), depth - 1, alpha, beta, side));
+            beta = min(v, beta);
+
+            if (beta <= alpha)
+            {
+                abMove = moves[i];
+                break;
+            }
+        }
+
+        return v;
     }
 }
