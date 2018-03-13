@@ -18,7 +18,7 @@ Player::Player(Side side) {
     playBoard = new Board(); // board that player keeps track of
     playerSide = side; // set side
 
-    abMove = new Move(0, 0);
+    //abMove = new Move(0, 0);
 
     if (side == BLACK)
     {
@@ -141,21 +141,22 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 
     playBoard->doMove(opponentsMove, opponentSide);
 
-    alphabeta(playBoard, 3, INT_MIN, INT_MAX, playerSide);
+    vector<int> thing = alphabeta(playBoard, 3, INT_MIN, INT_MAX, playerSide);
 
-    playBoard->doMove(abMove, playerSide);
+    playBoard->doMove(new Move(thing[1], thing[2]), playerSide);
 
-    return abMove;
+    return new Move(thing[1], thing[2]);
 }
 
-int Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side)
+vector<int> Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side)
 {
-    int v = 0;
-    Side otherSide;
+    Move *abMove;
+    int v;
+    Board *tempBoard = curBoard->copy();
 
     if (depth == 0 || !curBoard->hasMoves(side))
     {
-        return curBoard->getScore(side);
+        return {curBoard->getScore(side), 0, 0};
     }
 
     vector<Move *> moves = curBoard->getMoves(side);
@@ -166,15 +167,17 @@ int Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side
 
         for (int i = 0; i < moves.size(); i++)
         {
-            Board *tempBoard = curBoard->copy();
+
+            std::cerr << "Move(p) " << i << ": " << moves[i]->getX() << ", " << moves[i]->getY() << std::endl;
             tempBoard->doMove(moves[i], side);
 
-            int ab = alphabeta(tempBoard, depth - 1, alpha, beta, opponentSide);
+            int ab = alphabeta(tempBoard, depth - 1, alpha, beta, opponentSide)[0];
 
             if (ab > v)
             {
                 v = ab;
                 abMove = moves[i];
+                std::cerr << "Depth: " << depth << std::endl;
             }
 
             alpha = max(v, alpha);
@@ -185,8 +188,7 @@ int Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side
             }
         }
 
-        std::cerr << depth << ": " << abMove->getX() << ", " << abMove->getY() << std::endl;
-        return v;
+        return {v, abMove->getX(), abMove->getY()};
     }
     else
     {
@@ -194,15 +196,17 @@ int Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side
 
         for (int i = 0; i < moves.size(); i++)
         {
-            Board *tempBoard = curBoard->copy();
+
+            std::cerr << "Move(o) " << i << ": " << moves[i]->getX() << ", " << moves[i]->getY() << std::endl;
             tempBoard->doMove(moves[i], side);
 
-            int ab = alphabeta(tempBoard, depth - 1, alpha, beta, playerSide);
+            int ab = alphabeta(tempBoard, depth - 1, alpha, beta, playerSide)[0];
 
             if (ab < v)
             {
                 v = ab;
                 abMove = moves[i];
+                std::cerr << "Depth: " << depth << std::endl;
             }
 
             beta = min(v, beta);
@@ -213,7 +217,6 @@ int Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side
             }
         }
 
-        std::cerr << depth << ": " << abMove->getX() << ", " << abMove->getY() << std::endl;
-        return v;
+        return {v, abMove->getX(), abMove->getY()};
     }
 }

@@ -222,40 +222,8 @@ int Board::getScore(Side side)
 
     score += count(side) - count(opponentSide);
 
-    return score;
-
-    /*
-    // for ease of writing
-    int x = moves[i]->getX();
-    int y = moves[i]->getY();
-
-    // corner position weighed extremely heavily
-    if ((x == 0 || x == 7) && (y == 0 || y == 7))
-    {
-        score += 50;
-    }
-
-    // side position weighed somewhat
-    if (x == 0 || x == 7 || y == 0 || y == 7)
-    {
-        score += 10;
-    }
-
-    // one spot from corner is very bad
-
-    if ((x == 0 && (y == 1 || y == 6)) || (x == 7 && (y == 1 || y == 6)) ||
-        (y == 0 && (x == 1 || x == 6)) || (y == 7 && (x == 1 || x == 6)) ||
-        (x == 1 && y == 1) || (x == 1 && y == 6) || (x == 6 && y == 1) || (x == 6 && y == 6))
-    {
-        score -= 10;
-    }
-
-    //one spot from edge is bad
-    if (x == 1 || x == 6 || y == 1 || y == 6)
-    {
-        score -= 5;
-    }
-
-    // being on the side next to an opposite color is bad
-    */
+    for ()
+        {
+            if (black[x + 8*y] == (side == BLACK))
+        }
 }
