@@ -178,20 +178,80 @@ void Board::setBoard(char data[]) {
         }
     }
 }
-/* TODO implemented later
-* populates a vector of all possible moves for a certain side
-vector<Move *> Board::getMoves(Side side){
-    vector<Move *> moves;
-    for (int i = 0; i < 8; i++)
+
+
+// populates a vector of all possible moves for a certain side
+vector<Move *> Board::getMoves(Side side)
+{
+    vector<Move *> moves; // vector of possible moves at a given board
+
+    if (hasMoves(side))
+    {
+        return NULL;
+    }
+
+    for (int i = 0; i < 8; i++) // populate moves vector
     {
         for (int j = 0; j < 8; j++)
         {
             Move * tempMove = new Move(i, j);
-            if(checkMove(tempMove, side))
+            if (checkMove(tempMove, side))
             {
                 moves.push_back(tempMove);
             }
         }
     }
+
+    return moves;
 }
-*/
+
+int Board::getScore(Side side)
+{
+    Side opponentSide;
+
+    if (side = BLACK)
+    {
+        opponentSide = WHITE;
+    }
+    else
+    {
+        opponentSide = BLACK;
+    }
+
+    score += count(side) - count(opponentSide);
+
+    /*
+    // for ease of writing
+    int x = moves[i]->getX();
+    int y = moves[i]->getY();
+
+    // corner position weighed extremely heavily
+    if ((x == 0 || x == 7) && (y == 0 || y == 7))
+    {
+        score += 50;
+    }
+
+    // side position weighed somewhat
+    if (x == 0 || x == 7 || y == 0 || y == 7)
+    {
+        score += 10;
+    }
+
+    // one spot from corner is very bad
+
+    if ((x == 0 && (y == 1 || y == 6)) || (x == 7 && (y == 1 || y == 6)) ||
+        (y == 0 && (x == 1 || x == 6)) || (y == 7 && (x == 1 || x == 6)) ||
+        (x == 1 && y == 1) || (x == 1 && y == 6) || (x == 6 && y == 1) || (x == 6 && y == 6))
+    {
+        score -= 10;
+    }
+
+    //one spot from edge is bad
+    if (x == 1 || x == 6 || y == 1 || y == 6)
+    {
+        score -= 5;
+    }
+
+    // being on the side next to an opposite color is bad
+    */
+}

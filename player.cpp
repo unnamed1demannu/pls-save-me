@@ -54,7 +54,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      * process the opponent's opponents move before calculating your own move
      */
 
-    if (!testingMinimax)
+    if (false)
     {
         playBoard->doMove(opponentsMove, opponentSide);
 
@@ -253,4 +253,12 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     }
 
 
+}
+
+int Player::alphabeta(Board curBoard, int depth, int alpha, int beta, Side side)
+{
+    if (depth == 0 || !board.hasMoves(curPlayer))
+    {
+        return curBoard.getScore();
+    }
 }
