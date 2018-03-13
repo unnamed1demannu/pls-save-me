@@ -67,17 +67,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
             return nullptr;
         }
 
-        for (int i = 0; i < 8; i++) // populate moves vector
-        {
-            for (int j = 0; j < 8; j++)
-            {
-                Move * tempMove = new Move(i, j);
-                if (playBoard->checkMove(tempMove, playerSide))
-                {
-                    moves.push_back(tempMove);
-                }
-            }
-        }
+        moves = playBoard->getMoves(playerSide);
 
         //std::cerr << bestMove->getX() << ", " << bestMove->getY() << std::endl;
 
@@ -150,17 +140,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
             return nullptr;
         }
 
-        for (int i = 0; i < 8; i++) // populate moves vector
-        {
-            for (int j = 0; j < 8; j++)
-            {
-                Move * tempMove = new Move(i, j);
-                if (playBoard->checkMove(tempMove, playerSide))
-                {
-                    moves.push_back(tempMove);
-                }
-            }
-        }
+        moves = playBoard->getMoves(playerSide);
 
         //std::cerr << bestMove->getX() << ", " << bestMove->getY() << std::endl;
 
@@ -171,20 +151,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
             tempBoard->doMove(moves[i], playerSide); // do the move
             int minScore = 0;
 
-            vector<Move*> moves2; // vector of possible moves at a given board
-
-            // find new possible moves for new depth
-            for (int j = 0; j < 8; j++) // populate moves vector
-            {
-                for (int k = 0; k < 8; k++)
-                {
-                    Move * tempMove = new Move(j, k);
-                    if (tempBoard->checkMove(tempMove, opponentSide))
-                    {
-                        moves2.push_back(tempMove);
-                    }
-                }
-            }
+            vector<Move*> moves2 = tempBoard->getMoves(opponentSide); // vector of possible moves at a given board
 
             for (int j = 0; j < moves2.size(); j++)
             {
