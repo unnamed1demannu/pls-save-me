@@ -222,8 +222,42 @@ int Board::getScore(Side side)
 
     score += count(side) - count(opponentSide);
 
-    for ()
+    for (int x = 0; x < 8; x++)
+    {
+        if (black[x] == (side == BLACK) || black[x + 8*7] == (side == BLACK) )
         {
-            if (black[x + 8*y] == (side == BLACK))
+            score += 3;
         }
+    }
+
+    for (int y = 0; y < 8; y++)
+    {
+        if (black[8*y] == (side == BLACK) || black[7 + 8*y] == (side == BLACK) )
+        {
+            score += 3;
+        }
+    }
+
+    for (int y = 0; y < 8; y++)
+    {
+        if (black[1+8*y] == (side == BLACK) || black[6 + 8*y] == (side == BLACK) )
+        {
+            score -= 15;
+        }
+    }
+
+    for (int x = 0; x < 8; x++)
+    {
+        if (black[x + 8] == (side == BLACK) || black[x + 8*6] == (side == BLACK) )
+        {
+            score -= 15;
+        }
+    }
+
+    if (black[0] == (side == BLACK) || black[8*7] == (side == BLACK) || black[7] == (side == BLACK) || black[8*6] == (side == BLACK) )
+    {
+        score += 100;
+    }
+
+    return score;
 }
