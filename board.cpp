@@ -229,7 +229,7 @@ int Board::getScore(Side side)
         {
             if 
         }
-    }*/
+    }
 
     for (int x = 0; x < 8; x++)
     {
@@ -255,7 +255,7 @@ int Board::getScore(Side side)
         }
     }
 
-    /*
+    
 
     for (int y = 0; y < 8; y++)
     {

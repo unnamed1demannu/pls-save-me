@@ -141,7 +141,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 
     playBoard->doMove(opponentsMove, opponentSide);
 
-    vector<int> thing = alphabeta(playBoard, 2, INT_MIN, INT_MAX, playerSide);
+    vector<int> thing = alphabeta(playBoard, 6, INT_MIN, INT_MAX, playerSide);
 
     /*
     if (thing[1] == NULL)
