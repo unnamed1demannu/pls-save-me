@@ -141,9 +141,17 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 
     playBoard->doMove(opponentsMove, opponentSide);
 
-    vector<int> thing = alphabeta(playBoard, 6, INT_MIN, INT_MAX, playerSide);
+    vector<int> thing = alphabeta(playBoard, 2, INT_MIN, INT_MAX, playerSide);
+
+    
+    if (thing[1] == NULL)
+    {
+        return nullptr;
+    }
 
     playBoard->doMove(new Move(thing[1], thing[2]), playerSide);
+
+    std::cerr << "/n Actual move: " << thing[1] << thing[2] << "/n" << std::endl;
 
     return new Move(thing[1], thing[2]);
 }
@@ -156,7 +164,8 @@ vector<int> Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, S
 
     if (depth == 0 || !curBoard->hasMoves(side))
     {
-        return {curBoard->getScore(side), 0, 0};
+        //std::cerr << "AB: " << curBoard->getScore(side) << std::endl;
+        return {curBoard->getScore(playerSide), NULL, NULL};
     }
 
     vector<Move *> moves = curBoard->getMoves(side);
@@ -169,22 +178,28 @@ vector<int> Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, S
         {
             tempBoard->doMove(moves[i], side);
             std::cerr << "Move(p) " << i << ": " << moves[i]->getX() << ", " << moves[i]->getY() << std::endl;
-            std::cerr << "Points: " << tempBoard->getScore(playerSide) << std::endl;
 
             int ab = alphabeta(tempBoard, depth - 1, alpha, beta, opponentSide)[0];
+            // int ab = tempBoard->getScore(side);
+            std::cerr << "AB: " << ab << std::endl;
 
-            if (ab > v)
+            if (v < ab)
             {
                 v = ab;
                 abMove = moves[i];
             }
 
-            alpha = max(v, alpha);
+            if (v > alpha)
+            {
+                alpha = v;
+            }
 
+            
             if (beta <= alpha)
             {
                 break;
             }
+            
         }
 
         return {v, abMove->getX(), abMove->getY()};
@@ -197,25 +212,23 @@ vector<int> Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, S
         {
 
             std::cerr << "Move(o) " << i << ": " << moves[i]->getX() << ", " << moves[i]->getY() << std::endl;
-            std::cerr << "Points: " << tempBoard->getScore(playerSide) << std::endl;
             tempBoard->doMove(moves[i], side);
 
             int ab = alphabeta(tempBoard, depth - 1, alpha, beta, playerSide)[0];
+            std::cerr << "AB: " << ab << std::endl;
 
-            if (ab < v)
-            {
-                v = ab;
-                abMove = moves[i];
-            }
+            v = min(ab, v);
 
             beta = min(v, beta);
 
+            
             if (beta <= alpha)
             {
                 break;
             }
+            
         }
 
-        return {v, abMove->getX(), abMove->getY()};
+        return {v, 0, 0};
     }
 }

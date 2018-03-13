@@ -185,7 +185,7 @@ vector<Move *> Board::getMoves(Side side)
 {
     vector<Move *> moves; // vector of possible moves at a given board
 
-    if (!this->hasMoves(side))
+    if (!hasMoves(side))
     {
         return vector<Move *>();
     }
@@ -195,7 +195,7 @@ vector<Move *> Board::getMoves(Side side)
         for (int j = 0; j < 8; j++)
         {
             Move * tempMove = new Move(i, j);
-            if (this->checkMove(tempMove, side))
+            if (checkMove(tempMove, side))
             {
                 moves.push_back(tempMove);
             }
@@ -220,21 +220,38 @@ int Board::getScore(Side side)
         opponentSide = BLACK;
     }
 
-    score += count(side) - count(opponentSide);
+    score = count(side) - count(opponentSide);
+
+    /*
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            if 
+        }
+    }*/
 
     for (int x = 0; x < 8; x++)
     {
-        if (black[x] == (side == BLACK) || black[x + 8*7] == (side == BLACK) )
+        if (get(side, x, 0) || get(side, x, 7))
         {
-            score += 3;
+            score += 8;
+        }
+        if (get(opponentSide, x, 0) || get(opponentSide, x, 7))
+        {
+            score -= 8;
         }
     }
 
     for (int y = 0; y < 8; y++)
     {
-        if (black[8*y] == (side == BLACK) || black[7 + 8*y] == (side == BLACK) )
+        if (get(side, 0, y) || get(side, 7, y))
         {
-            score += 3;
+            score += 8;
+        }
+        if (get(opponentSide, 0, y) || get(opponentSide, 7, y))
+        {
+            score -= 8;
         }
     }
 
@@ -242,7 +259,7 @@ int Board::getScore(Side side)
     {
         if (black[1+8*y] == (side == BLACK) || black[6 + 8*y] == (side == BLACK) )
         {
-            score -= 15;
+            score -= 2;
         }
     }
 
@@ -250,14 +267,19 @@ int Board::getScore(Side side)
     {
         if (black[x + 8] == (side == BLACK) || black[x + 8*6] == (side == BLACK) )
         {
-            score -= 15;
+            score -= 2;
         }
     }
 
-    if (black[0] == (side == BLACK) || black[8*7] == (side == BLACK) || black[7] == (side == BLACK) || black[8*6] == (side == BLACK) )
+    if (get(side, 0, 0) || get(side, 0, 7) || get(side, 7, 0) || get(side, 7, 7) )
     {
         score += 100;
     }
+    if (get(opponentSide, 0, 0) || get(opponentSide, 0, 7) || get(opponentSide, 7, 0) || get(opponentSide, 7, 7) )
+    {
+        score -= 100;
+    }
 
     return score;
+
 }
