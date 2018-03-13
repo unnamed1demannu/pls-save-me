@@ -255,6 +255,8 @@ int Board::getScore(Side side)
         }
     }
 
+    /*
+
     for (int y = 0; y < 8; y++)
     {
         if (black[1+8*y] == (side == BLACK) || black[6 + 8*y] == (side == BLACK) )
@@ -269,7 +271,7 @@ int Board::getScore(Side side)
         {
             score -= 2;
         }
-    }
+    } */
 
     if (get(side, 0, 0) || get(side, 0, 7) || get(side, 7, 0) || get(side, 7, 7) )
     {

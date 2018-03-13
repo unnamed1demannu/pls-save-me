@@ -143,22 +143,22 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 
     vector<int> thing = alphabeta(playBoard, 2, INT_MIN, INT_MAX, playerSide);
 
-    
+    /*
     if (thing[1] == NULL)
     {
         return nullptr;
-    }
-
-    playBoard->doMove(new Move(thing[1], thing[2]), playerSide);
+    }*/
 
     std::cerr << "/n Actual move: " << thing[1] << thing[2] << "/n" << std::endl;
+
+    playBoard->doMove(new Move(thing[1], thing[2]), playerSide);
 
     return new Move(thing[1], thing[2]);
 }
 
 vector<int> Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side)
 {
-    Move *abMove;
+    
     int v;
     Board *tempBoard = curBoard->copy();
 
@@ -172,6 +172,7 @@ vector<int> Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, S
 
     if (side == playerSide)
     {
+        Move *abMove;
         v = INT_MIN;
 
         for (int i = 0; i < moves.size(); i++)
@@ -182,6 +183,9 @@ vector<int> Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, S
             int ab = alphabeta(tempBoard, depth - 1, alpha, beta, opponentSide)[0];
             // int ab = tempBoard->getScore(side);
             std::cerr << "AB: " << ab << std::endl;
+
+
+                std::cerr << depth << std::endl;
 
             if (v < ab)
             {
@@ -202,6 +206,7 @@ vector<int> Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, S
             
         }
 
+        std::cerr << abMove->getX() << abMove->getY() << std::endl;
         return {v, abMove->getX(), abMove->getY()};
     }
     else
