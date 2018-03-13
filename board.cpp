@@ -185,9 +185,9 @@ vector<Move *> Board::getMoves(Side side)
 {
     vector<Move *> moves; // vector of possible moves at a given board
 
-    if (hasMoves(side))
+    if (!this->hasMoves(side))
     {
-        return NULL;
+        return vector<Move *>();
     }
 
     for (int i = 0; i < 8; i++) // populate moves vector
@@ -195,7 +195,7 @@ vector<Move *> Board::getMoves(Side side)
         for (int j = 0; j < 8; j++)
         {
             Move * tempMove = new Move(i, j);
-            if (checkMove(tempMove, side))
+            if (this->checkMove(tempMove, side))
             {
                 moves.push_back(tempMove);
             }
@@ -209,7 +209,9 @@ int Board::getScore(Side side)
 {
     Side opponentSide;
 
-    if (side = BLACK)
+    int score = 0;
+
+    if (side == BLACK)
     {
         opponentSide = WHITE;
     }
@@ -219,6 +221,8 @@ int Board::getScore(Side side)
     }
 
     score += count(side) - count(opponentSide);
+
+    return score;
 
     /*
     // for ease of writing

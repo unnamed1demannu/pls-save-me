@@ -18,6 +18,8 @@ Player::Player(Side side) {
     playBoard = new Board(); // board that player keeps track of
     playerSide = side; // set side
 
+    abMove = new Move(0, 0);
+
     if (side == BLACK)
     {
         opponentSide = WHITE;
@@ -140,7 +142,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     playBoard->doMove(opponentsMove, opponentSide);
 
     alphabeta(playBoard, 3, INT_MIN, INT_MAX, playerSide);
-    
+
     playBoard->doMove(abMove, playerSide);
 }
 
@@ -150,14 +152,16 @@ int Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side
     Side otherSide;
     Board *tempBoard = curBoard->copy();
 
-    if (depth == 0 || !curBboard->hasMoves(side))
+    std::cerr << "mosefsdf" << std::endl;
+
+    if (depth == 0 || !curBoard->hasMoves(side))
     {
-        return curBoard->getScore();
+        return curBoard->getScore(side);
     }
 
     if (side == WHITE)
     {
-        otherSide = BLACK:
+        otherSide = BLACK;
     }
     else
     {
@@ -172,7 +176,9 @@ int Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side
 
         for (int i = 0; i < moves.size(); i++)
         {
-            v = max(v, alphabeta(tempBoard->doMove(moves[i], side), depth - 1, alpha, beta, otherSide));
+            std::cerr << "player: " << i << std::endl;
+            tempBoard->doMove(moves[i], side);
+            v = max(v, alphabeta(tempBoard, depth - 1, alpha, beta, otherSide));
             alpha = max(v, alpha);
 
             if (beta <= alpha)
@@ -190,7 +196,9 @@ int Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side
         
         for (int i = 0; i < moves.size(); i++)
         {
-            v = min(v, alphabeta(tempBoard->doMove(moves[i], side), depth - 1, alpha, beta, side));
+            std::cerr << "opp: " << i << std::endl;
+            tempBoard->doMove(moves[i], side);
+            v = min(v, alphabeta(tempBoard, depth - 1, alpha, beta, otherSide));
             beta = min(v, beta);
 
             if (beta <= alpha)
