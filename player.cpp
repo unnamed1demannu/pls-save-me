@@ -152,7 +152,6 @@ int Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side
 {
     int v = 0;
     Side otherSide;
-    Board *tempBoard = curBoard->copy();
 
     if (depth == 0 || !curBoard->hasMoves(side))
     {
@@ -167,6 +166,7 @@ int Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side
 
         for (int i = 0; i < moves.size(); i++)
         {
+            Board *tempBoard = curBoard->copy();
             tempBoard->doMove(moves[i], side);
 
             int ab = alphabeta(tempBoard, depth - 1, alpha, beta, opponentSide);
@@ -191,9 +191,10 @@ int Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side
     else
     {
         v = INT_MAX;
-        
+
         for (int i = 0; i < moves.size(); i++)
         {
+            Board *tempBoard = curBoard->copy();
             tempBoard->doMove(moves[i], side);
 
             int ab = alphabeta(tempBoard, depth - 1, alpha, beta, playerSide);
@@ -203,7 +204,7 @@ int Player::alphabeta(Board *curBoard, int depth, int alpha, int beta, Side side
                 v = ab;
                 abMove = moves[i];
             }
-            
+
             beta = min(v, beta);
 
             if (beta <= alpha)
